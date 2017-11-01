@@ -11,9 +11,13 @@
   spark.streaming.kafka.maxRatePerPartition:n (record/s)
 ```
 
-处理效果对比：
+处理效果对比:
+
 限速之前的*batch*:
+
 ![处理之前](../pictures/before.png "处理之前的batch")
+
 限速之后的*batch*:
+
 ![处理之后](../pictures/after.png "处理之后的batch")
 
