@@ -6,7 +6,7 @@
 
 解决方案：
 ```
-  一般采用背压（backpressure）和限制每个分区的速度的方式对*spark streaming*应用进行限速
+  一般采用背压（backpressure）和限制每个分区的速度的方式对spark streaming应用进行限速
   spark.streaming.backpressure.enabled:true
   spark.streaming.kafka.maxRatePerPartition:n (record/s)
 ```
@@ -27,9 +27,10 @@
 
 解决方案:
 ```
-  每个spark streaming应用的每个批次(*batch*)处于**活动**状态的*Task*数量取决于RDD的*partition*数量,不提高应用的分区数是无法提高
-  任务的并行度，继而无法充分使用扩充的资源(*number.executor*).比较推荐的解决方案是增加数据源的分区数。
+  每个spark streaming应用的每个批次(batch)处于"活动"状态的Task数量取决于RDD的partition数量,
+  不提高应用的分区数是无法提 任务的并行度，继而无法充分使用扩充的资源(number.executor)。
+  比较推荐的解决方案是增加数据源的分区数。
 ```
 处理效果对比：
 
-![处理之前](../pictrue/add-partition-before.png "未增加数据源分区数量时的处理时间和延时图")
+![处理之前](../pictrues/add-partition-before.png "未增加数据源分区数量时的处理时间和延时图")
