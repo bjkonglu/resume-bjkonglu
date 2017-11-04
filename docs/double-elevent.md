@@ -36,3 +36,9 @@
 增加分区(*batch*)之前:
 
 ![处理之前](../pictures/add-partition-before.png "未增加数据源分区数量时的处理时间和延时图")
+
+
+### 场景3
+> 在实际应用中，spark streaming应用会出现接入多个数据源(*InputDStream*)和多个输出操作(*OutputDStream*)的需求，
+这个时候spark streaming引擎会会遍历输出操作(*OutputDStream*)，然后处理这个输出操作的的*RDD*，依次迭代完所有的
+输出操作。
