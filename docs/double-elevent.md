@@ -33,4 +33,6 @@
 ```
 处理效果对比：
 
-![处理之前](../pictrues/add-partition-before.png "未增加数据源分区数量时的处理时间和延时图")
+增加分区(*batch*)之前:
+
+![处理之前](../pictures/add-partition-before.png "未增加数据源分区数量时的处理时间和延时图")
