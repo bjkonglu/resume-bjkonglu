@@ -15,9 +15,21 @@
 
 限速之前的*batch*:
 
-![处理之前](../pictures/before.png "处理之前的batch")
+![处理之前](../pictures/rate-limiting-before.png "处理之前的batch")
 
 限速之后的*batch*:
 
-![处理之后](../pictures/after.png "处理之后的batch")
+![处理之后](../pictures/rate-limiting-after.png "处理之后的batch")
 
+### 场景2
+> 增加应用的资源(number.executors,executor.cores)，但是应用的每个批次(*batch*)的处理时间反而没有减少，
+还有个现象是应用没有能充分使用executor（例如应用本身占有120个executor，但是最多只能使用50个executor。）
+
+解决方案:
+```
+  每个spark streaming应用的每个批次(*batch*)处于**活动**状态的*Task*数量取决于RDD的*partition*数量,不提高应用的分区数是无法提高
+  任务的并行度，继而无法充分使用扩充的资源(*number.executor*).比较推荐的解决方案是增加数据源的分区数。
+```
+处理效果对比：
+
+![处理之前](../pictrue/add-partition-before.png "未增加数据源分区数量时的处理时间和延时图")
