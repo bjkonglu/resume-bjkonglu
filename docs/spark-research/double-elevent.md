@@ -42,3 +42,8 @@
 > 在实际应用中，spark streaming应用会出现接入多个数据源(*InputDStream*)和多个输出操作(*OutputDStream*)的需求，
 这个时候spark streaming引擎会会遍历输出操作(*OutputDStream*)，然后处理这个输出操作的的*RDD*，依次迭代完所有的
 输出操作。
+
+### 场景4
+> 在实际应用中，spark streaming应用通过参数(spark.executor.instances)设置executor的个数，但是在spark UI上看到
+executor多于设置的数量？
+
