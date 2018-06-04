@@ -3,3 +3,5 @@
 
 - [spark研究](docs/spark-research)
 - [flink研究](docs/flink-research)
+
+我把平时遇到的问题和自己的思考记录在我的[issue](https://github.com/bjkonglu/resume-bjkonglu/issues),方便和大家讨论。
