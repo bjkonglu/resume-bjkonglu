@@ -25,7 +25,7 @@
     <value>hivemeta</value>
 </property>
 
-<!--hive元数据存放地址, 被Spark Thrift Server用来获取hive元数据，使用之前必须确保hive启动了hive metastore服务（hiveserver2）-->
+<!--hive元数据存放地址, 被Spark Thrift Server用来获取hive元数据，使用之前必须确保hive启动了hive metastore服务（hive --service metastore）-->
 <property>
 <name>hive.metastore.uris</name>
 <value>thrift://metaStoreHost:port</value>
