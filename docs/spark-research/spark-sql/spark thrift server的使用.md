@@ -1,4 +1,4 @@
-## spark thrift server的使用
+## Spark Thrift Server的使用
 
 在我们使用SPARK SQL时，除了使用spark-sql.sh脚本实现对hive的查询外，我们还可以另一种选择，那就是Spark Thrift Server。这个方式方便我们对交互查询做二次开发，只要通过JDBC/ODBC的方式，便可以与Spark SQL应用进行交互，达到交互查询的功能。下面我们就开始介绍一下Spark Thrift Server的使用和原理。
 
@@ -49,3 +49,5 @@
 启动beeline客户端后，我们需要发出连接请求（!connect jbdc:hive2://thriftserverHost:port），去获取thriftserver的长连接（底层socket连接）。
 当在客户端上执行指令（!sql sqlStatement）时，实际上的行为就是远程调用thrift接口。
 
+### 扩展
+  Spark Thrift Server实现了Spark SQL的连接，同时也是为我们可以开发符合自身业务特点的*即席查询*提供了思路。
