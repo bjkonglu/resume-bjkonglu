@@ -7,7 +7,25 @@
   首先，我们将hive的配置conf/hive-site.xml移动到spark的配置目录$SPARK_HOME/conf下，并增加下面几项配置，如下：
 ```scala
 <configuration>
-<!--hive元数据存放地址, 被Spark Thrift Server用来获取hive元数据-->
+<!--spark sql使用的hive元数据库地址、用户名、密码和驱动配置-->
+<property>
+    <name>javax.jdo.option.ConnectionURL</name>
+    <value>jdbc:mysql://mysqlServerHost:port/hive_meta?useUnicode=true&amp;characterEncoding=UTF-8&amp;serverTimezone=Asia/Shanghai&amp;useSSL=false</value>
+</property>
+<property>
+    <name>javax.jdo.option.ConnectionDriverName</name>
+    <value>com.mysql.jdbc.Driver</value>
+</property>
+<property>
+    <name>javax.jdo.option.ConnectionUserName</name>
+    <value>hivemeta</value>
+</property>
+<property>
+    <name>javax.jdo.option.ConnectionPassword</name>
+    <value>hivemeta</value>
+</property>
+
+<!--hive元数据存放地址, 被Spark Thrift Server用来获取hive元数据，使用之前必须确保hive启动了hive metastore服务（hiveserver2）-->
 <property>
 <name>hive.metastore.uris</name>
 <value>thrift://metaStoreHost:port</value>
