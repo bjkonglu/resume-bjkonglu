@@ -7,7 +7,7 @@
   首先，我们将hive的配置conf/hive-site.xml移动到spark的配置目录$SPARK_HOME/conf下，并增加下面几项配置，如下：
 ```scala
 <configuration>
-<!--spark sql使用的hive元数据库地址、用户名、密码和驱动配置-->
+<!--spark-sql.sh使用的hive元数据库地址、用户名、密码和驱动配置-->
 <property>
     <name>javax.jdo.option.ConnectionURL</name>
     <value>jdbc:mysql://mysqlServerHost:port/hive_meta?useUnicode=true&amp;characterEncoding=UTF-8&amp;serverTimezone=Asia/Shanghai&amp;useSSL=false</value>
@@ -27,34 +27,34 @@
 
 <!--hive元数据存放地址, 被Spark Thrift Server用来获取hive元数据，使用之前必须确保hive启动了hive metastore服务（hive --service metastore）-->
 <property>
-<name>hive.metastore.uris</name>
-<value>thrift://metaStoreHost:port</value>
-<description>Thrift URI for the remote metastore. Used by metastore client to connect to remote metastore.</description>
+    <name>hive.metastore.uris</name>
+    <value>thrift://metaStoreHost:port</value>
+    <description>Thrift URI for the remote metastore. Used by metastore client to connect to remote metastore.</description>
 </property>
  
 <!--thrift server配置-->  
 <property>
-<name>hive.server2.thrift.min.worker.threads</name>
-<value>5</value>
-<description>Minimum number of Thrift worker threads</description>
+    <name>hive.server2.thrift.min.worker.threads</name>
+    <value>5</value>
+    <description>Minimum number of Thrift worker threads</description>
 </property>
  
 <property>
-<name>hive.server2.thrift.max.worker.threads</name>
-<value>500</value>
-<description>Maximum number of Thrift worker threads</description>
+    <name>hive.server2.thrift.max.worker.threads</name>
+    <value>500</value>
+    <description>Maximum number of Thrift worker threads</description>
 </property>
  
 <property>
-<name>hive.server2.thrift.port</name>
-<value>thriftServerPort</value>
-<description>Port number of HiveServer2 Thrift interface. Can be overridden by setting $HIVE_SERVER2_THRIFT_PORT</description>
+    <name>hive.server2.thrift.port</name>
+    <value>thriftServerPort</value>
+    <description>Port number of HiveServer2 Thrift interface. Can be overridden by setting $HIVE_SERVER2_THRIFT_PORT</description>
 </property>
  
 <property>
-<name>hive.server2.thrift.bind.host</name>
-<value>thriftServerHost</value>
-<description>Bind host on which to run the HiveServer2 Thrift interface.Can be overridden by setting$HIVE_SERVER2_THRIFT_BIND_HOST</description>
+    <name>hive.server2.thrift.bind.host</name>
+    <value>thriftServerHost</value>
+    <description>Bind host on which to run the HiveServer2 Thrift interface.Can be overridden by setting$HIVE_SERVER2_THRIFT_BIND_HOST</description>
 </property>
 </configuration>
 ```
