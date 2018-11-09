@@ -15,11 +15,11 @@
 
 限速之前的*batch*:
 
-![处理之前](rate-limiting-before.png "处理之前的batch")
+![处理之前](../../pics/rate-limiting-before.png "处理之前的batch")
 
 限速之后的*batch*:
 
-![处理之后](rate-limiting-after.png "处理之后的batch")
+![处理之后](../../pics/rate-limiting-after.png "处理之后的batch")
 
 ### 场景2
 > 增加应用的资源(number.executors,executor.cores)，但是应用的每个批次(*batch*)的处理时间反而没有减少，
@@ -35,7 +35,7 @@
 
 增加分区(*batch*)之前:
 
-![处理之前](add-partition-before.png "未增加数据源分区数量时的处理时间和延时图")
+![处理之前](../../pics/add-partition-before.png "未增加数据源分区数量时的处理时间和延时图")
 
 
 ### 场景3

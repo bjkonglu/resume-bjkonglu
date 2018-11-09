@@ -11,3 +11,5 @@
     - [flink基本组件和逻辑计划生成](docs/flink-research/flink基本组件和逻辑计划生成)
 
 平时遇到的问题和思考记录在[issue](https://github.com/bjkonglu/resume-bjkonglu/issues),与君共享。
+
+![Spark vs Flink](docs/pics/resume-bjkonglu-logo.jpg)
