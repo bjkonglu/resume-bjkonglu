@@ -1,5 +1,5 @@
 # resume-bjkonglu
-> 该文档主要记录自己研究过的技术重点和一些学习经验，希望能与大家一起分享和讨论。
+> 该文档主要记录研究过的技术重点和一些学习经验，希望能与大家一起分享和讨论。
 
 - [spark研究](docs/spark-research)
     - [spark-core](docs/spark-research/spark-core)
@@ -8,5 +8,6 @@
     - [spark-2.4.x](docs/spark-research/spark-2.4.x)
     - [应用场景](docs/spark-research/应用场景)
 - [flink研究](docs/flink-research)
+    - [flink基本组件和逻辑计划生成](doc/flink-research/flink基本组件和逻辑计划生成)
 
-我把平时遇到的问题和自己的思考记录在我的[issue](https://github.com/bjkonglu/resume-bjkonglu/issues),方便和大家讨论。
+平时遇到的问题和思考记录在[issue](https://github.com/bjkonglu/resume-bjkonglu/issues),与君共享。
