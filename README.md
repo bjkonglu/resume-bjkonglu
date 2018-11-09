@@ -8,6 +8,6 @@
     - [spark-2.4.x](docs/spark-research/spark-2.4.x)
     - [应用场景](docs/spark-research/应用场景)
 - [flink研究](docs/flink-research)
-    - [flink基本组件和逻辑计划生成](doc/flink-research/flink基本组件和逻辑计划生成)
+    - [flink基本组件和逻辑计划生成](docs/flink-research/flink基本组件和逻辑计划生成)
 
 平时遇到的问题和思考记录在[issue](https://github.com/bjkonglu/resume-bjkonglu/issues),与君共享。
