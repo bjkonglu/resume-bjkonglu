@@ -6,6 +6,7 @@
     - [spark-kerberos](docs/spark-research/spark-kerberos)
     - [spark-sql](docs/spark-research/spark-sql)
     - [spark-2.4.x](docs/spark-research/spark-2.4.x)
+    - [structrued streaming](docs/spark-research/structrued streaming)
     - [应用场景](docs/spark-research/应用场景)
 - [flink研究](docs/flink-research)
     - [flink基本组件和逻辑计划生成](docs/flink-research/flink基本组件和逻辑计划生成)
