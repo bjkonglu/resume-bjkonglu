@@ -94,4 +94,4 @@ class QueryListener(host: String, port: Int, cluster: String, index: String, map
 4. 最后便可以通过浏览器访问[http://localhost:5601](http://localhost:5601)来查看监控信息
 
 ### 结果展示
-![ss实时监控](../../pic/ss实时监控.png)
+![ss实时监控](../../pics/ss实时监控.png)
