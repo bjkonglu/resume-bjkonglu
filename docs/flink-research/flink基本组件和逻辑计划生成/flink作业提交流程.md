@@ -120,7 +120,7 @@
   - 并获取处于活动状态的用户自定义命令行接口(FlinkYarnSessionCli)
   - 最后开始运行program
   
-  ### 集群的部署/获取以及JobGraph的生成
+  ### 集群的部署/获取以及用户代码启动
   在上一小节，已经完成入参的解析进而我们获取到用户传入的各种参数以及flink的默认参数。在生产环境下，使用比较的模式是On YARN，所以下面开始介绍Flink On YARN的运行。在*runProgram(..)* 里面，首先创建集群的描述符，主要设定flinkJar、shipPath、queue、name、zookeeperNamespace等YARN的配置信息；然后，判断入参里面有没有指定集群地址，根据有没指定*yid*，分成几种情况来处理：
   - 没有指定yid并且处理detached模式，这种情况使用yarn session提交任务，一个任务一个集群，但是客户端提交完任务就不与任务就行交互了
   - 没有指定yid但不处理detached模式，这种情况使用yarn session提交任务，一个任务一个集群，（使用比较多）
@@ -143,4 +143,8 @@
 	2.
 	executeProgram(program, client, userParallelism);
 ```
-从上述代码中，可以发现使用集群描述符开始部署Flink集群，并返回该Flink集群的客户端。并开始执行program。
+从上述代码中，可以发现使用集群描述符开始部署Flink集群，并返回该Flink集群的客户端。并开始执行program。在*executeProgram(..)* 里面主要的逻辑就是通过Java放射机制调用用户主类，启动用户的代码。
+```java
+	// invoke main method
+	prog.invokeInteractiveModeForExecution();
+```
