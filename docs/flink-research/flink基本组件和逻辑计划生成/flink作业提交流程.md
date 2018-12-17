@@ -9,34 +9,34 @@
   - 最后便是通过*java*命令启动主类*org.apache.flink.client.cli.CliFrontend*
 当*CliFrontend*被运行时，程序就进如它的主函数(main(String[] args))，如下：
 ```java
-    EnvironmentInformation.logEnvironmentInfo(LOG, "Command Line Client", args);
+	EnvironmentInformation.logEnvironmentInfo(LOG, "Command Line Client", args);
 
-		// 1. find the configuration directory
-		final String configurationDirectory = getConfigurationDirectoryFromEnv();
+	// 1. find the configuration directory
+	final String configurationDirectory = getConfigurationDirectoryFromEnv();
 
-		// 2. load the global configuration
-		final Configuration configuration = GlobalConfiguration.loadConfiguration(configurationDirectory);
+	// 2. load the global configuration
+	final Configuration configuration = GlobalConfiguration.loadConfiguration(configurationDirectory);
 
-		// 3. load the custom command lines
-		final List<CustomCommandLine<?>> customCommandLines = loadCustomCommandLines(
+	// 3. load the custom command lines
+	final List<CustomCommandLine<?>> customCommandLines = loadCustomCommandLines(
+		configuration,
+		configurationDirectory);
+
+	try {
+		final CliFrontend cli = new CliFrontend(
 			configuration,
-			configurationDirectory);
+			customCommandLines);
 
-		try {
-			final CliFrontend cli = new CliFrontend(
-				configuration,
-				customCommandLines);
-
-			SecurityUtils.install(new SecurityConfiguration(cli.configuration));
-			int retCode = SecurityUtils.getInstalledContext()
-					.runSecured(() -> cli.parseParameters(args));
-			System.exit(retCode);
-		}
-		catch (Throwable t) {
-			LOG.error("Fatal error while running command line interface.", t);
-			t.printStackTrace();
-			System.exit(31);
-		}
+		SecurityUtils.install(new SecurityConfiguration(cli.configuration));
+		int retCode = SecurityUtils.getInstalledContext()
+				.runSecured(() -> cli.parseParameters(args));
+		System.exit(retCode);
+	}
+	catch (Throwable t) {
+		LOG.error("Fatal error while running command line interface.", t);
+		t.printStackTrace();
+		System.exit(31);
+	}
 ```
 
 简而言之，CliFrontend主要的功能是：
