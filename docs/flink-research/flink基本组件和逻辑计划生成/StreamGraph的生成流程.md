@@ -230,3 +230,11 @@ private Collection<Integer> transform(StreamTransformation<?> transform) {
 		return transformedIds;
 	}
 ```
+
+如果当前节点存在父节点，则需要增加边(Edge):
+```java
+for (Integer inputId: inputIds) {
+	streamGraph.addEdge(inputId, transform.getId(), 0);
+}
+```
+至此，StreamGraph就构建完成了，此时它拥有数据源(sources)、目标源(sinks)以及流节点(streamNodes)。
