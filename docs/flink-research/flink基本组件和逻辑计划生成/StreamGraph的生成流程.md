@@ -70,7 +70,7 @@ public <OUT> DataStreamSource<OUT> addSource(SourceFunction<OUT> function, Strin
 		// read the output type of the input Transform to coax out errors about MissingTypeInfo
 		transformation.getOutputType();
 
-    // 将当前转换操作链接前一个转换操作
+    		// 将当前转换操作链接前一个转换操作
 		OneInputTransformation<T, R> resultTransform = new OneInputTransformation<>(
 				this.transformation,
 				operatorName,
@@ -81,7 +81,7 @@ public <OUT> DataStreamSource<OUT> addSource(SourceFunction<OUT> function, Strin
 		@SuppressWarnings({ "unchecked", "rawtypes" })
 		SingleOutputStreamOperator<R> returnStream = new SingleOutputStreamOperator(environment, resultTransform);
 
-    // 然后将转换操作（除去source操作）存入转换列表容器
+    		// 然后将转换操作（除去source操作）存入转换列表容器
 		getExecutionEnvironment().addOperator(resultTransform);
 
 		return returnStream;
@@ -101,9 +101,9 @@ public DataStreamSink<T> addSink(SinkFunction<T> sinkFunction) {
 
 		StreamSink<T> sinkOperator = new StreamSink<>(clean(sinkFunction));
 
-    // 将当前转换操作链接前一个转换操作
+    		// 将当前转换操作链接前一个转换操作
 		DataStreamSink<T> sink = new DataStreamSink<>(this, sinkOperator);
-    // 然后将转换操作（除去source操作）存入转换列表容器
+    		// 然后将转换操作（除去source操作）存入转换列表容器
 		getExecutionEnvironment().addOperator(sink.getTransformation());
 		return sink;
 	}
