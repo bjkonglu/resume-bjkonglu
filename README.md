@@ -9,7 +9,10 @@
     - [structured-streaming](docs/spark-research/structured-streaming)
     - [应用场景](docs/spark-research/应用场景)
 - [flink研究](docs/flink-research)
-    - [flink基本组件和逻辑计划生成](docs/flink-research/flink基本组件和逻辑计划生成)
+    - [flink基本组件和逻辑计划生成](docs/flink-research/flink基本组件和逻辑计划生成) 
+      - [flink作业提交流程](docs/flink-research/flink基本组件和逻辑计划生成/flink作业提交流程.md)
+      - [StreamGraph的生成流程](docs/flink-research/flink基本组件和逻辑计划生成/StreamGraph的生成流程.md)
+      - [JobGraph的生成流程](docs/flink-research/flink基本组件和逻辑计划生成/JobGraph的生成流程.md)
     - [应用场景](docs/flink-research/应用场景)
 
 平时遇到的问题和思考记录在[issue](https://github.com/bjkonglu/resume-bjkonglu/issues),与君共享。
