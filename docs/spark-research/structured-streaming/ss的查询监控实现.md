@@ -2,7 +2,7 @@
 
 ### 背景
 在spark streaming时代，我们还能在spark ui查看到有多少条数据进入spark计算引擎，spark处理这些数据花费了多少时间以及延时多少时间。但是我们进入structured streaming时代时，我们在spark ui上查看不到这些信息了，只能查看到各个query的列表，这对于实时计算来说是一个短处，不过spark官方提出另一个处理方案，就是用户可以获取每个query的metrics信息。
-![spark官方文档](../../pics/ss实时监控1.png)
+![spark官方文档](../../pics/spark/minitor/ss实时监控1.png)
 ### 技术方案
 从上个小节，我们知道用户可以自定义获取structured streaming应用里的各个query的metrics信息，如果想要实时监控某些指标，只需要将这些指标写入到外部存储，然后通过可视化的工具呈现数据即可。目前，比较流行的数据可视化的方案有ElasticateSearch + Kibana，所以接下来将采用将query的metrics信息写入Es，然后通过Kibana呈现数据的方案来实现SS的查询实时监控。
 
@@ -94,4 +94,4 @@ class QueryListener(host: String, port: Int, cluster: String, index: String, map
 4. 最后便可以通过浏览器访问[http://localhost:5601](http://localhost:5601)来查看监控信息
 
 ### 结果展示
-![ss实时监控](../../pics/ss实时监控.png)
+![ss实时监控](../../pics/spark/minitor/ss实时监控.png)

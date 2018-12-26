@@ -109,7 +109,7 @@ public DataStreamSink<T> addSink(SinkFunction<T> sinkFunction) {
 	}
 ```
 至此，我们就获取每个转换操之间的联系了，如图所示：
-此处应有图片
+![StreamGraph构建准备](../../pics/flink/StreamGraph/StreamGraph构建准备.png)
 
 ### StreamGraph的构建过程
 上小节，我们已经获取了各个转换操作之间的联系了。接下来便是根据这些信息去构建StreamGraph，而这些构建的具体执行由*env.execute(..)* 完成。
@@ -237,4 +237,6 @@ for (Integer inputId: inputIds) {
 	streamGraph.addEdge(inputId, transform.getId(), 0);
 }
 ```
-至此，StreamGraph就构建完成了，此时它拥有数据源(sources)、目标源(sinks)以及流节点(streamNodes)。
+至此，StreamGraph就构建完成了，此时它拥有数据源(sources)、目标源(sinks)以及流节点(streamNodes)。构建成的StreamGraph如下图所示：
+
+![StreamGraph图](../../pics/flink/StreamGraph/StreamGraph图.png)
