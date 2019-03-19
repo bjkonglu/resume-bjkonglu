@@ -9,8 +9,7 @@
 通过远程DEBUG的方式，我们可以单步调试查看JobGraph生成的流程，[具体远程DEBUG的方法](https://github.com/bjkonglu/resume-bjkonglu/issues/9)
 
 ### 代码层面分析
-JobGraph生成的代码入口是StreamingJobGraphGenerator(全限定名为org.apache.flink.streaming.api.graph.StreamingJobGraphGenerator)，
-通过调用StreamingJobGraphGenerator.createJobGraph(streamGraph, jobID)进入构建JobGraph逻辑。先看一下StreamingJobGraphGenerator代码
+JobGraph生成的代码入口是StreamingJobGraphGenerator,通过调用StreamingJobGraphGenerator.createJobGraph(streamGraph, jobID)进入构建JobGraph逻辑。先看一下StreamingJobGraphGenerator代码
 的整体结构如下所示：
 ![StreamingJobGraphGenerator](../../pics/flink/JobGraph/StreamingJobGraphGenerator.png)
 
@@ -33,8 +32,8 @@ private JobGraph createJobGraph() {
 
 		Map<Integer, List<Tuple2<byte[], byte[]>>> chainedOperatorHashes = new HashMap<>();
 
-        // JobGraph生成的主要逻辑，创建JobVertex、JobEdge、IntermediateDataSet等，并将这边连接起来
-        // 如果前后JobVertex可以进行chain，则将这些JobVertex chained.
+        	// JobGraph生成的主要逻辑，创建JobVertex、JobEdge、IntermediateDataSet等，并将这边连接起来
+        	// 如果前后JobVertex可以进行chain，则将这些JobVertex chained.
 		setChaining(hashes, legacyHashes, chainedOperatorHashes);
 
 		setPhysicalEdges();
@@ -92,7 +91,7 @@ private List<StreamEdge> createChain(
 				}
 			}
 
-            // 然后递归处理后面的节点
+            		// 然后递归处理后面的节点
 			for (StreamEdge chainable : chainableOutputs) {
 				transitiveOutEdges.addAll(
 						createChain(startNodeId, chainable.getTargetId(), hashes, legacyHashes, chainIndex + 1, chainedOperatorHashes));
