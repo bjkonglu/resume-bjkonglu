@@ -17,6 +17,7 @@
       - [ExecuteGraph的生成流程](docs/flink-research/flink基本组件和逻辑计划生成/ExecuteGraph的生成流程.md)
       - [JobManger](docs/flink-research/flink基本组件和逻辑计划生成/JobManager.md)
     - [应用场景](docs/flink-research/应用场景)
+      - [flink实现自定义MetricsReporter](docs/flink-research/应用场景/flink实现自定义MetricsReporter.md)
 
 平时遇到的问题和思考记录在[issue](https://github.com/bjkonglu/resume-bjkonglu/issues),与君共享。
 
