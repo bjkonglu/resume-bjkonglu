@@ -2,6 +2,7 @@
 > 该文档主要记录研究过的技术重点和一些学习经验，希望能与大家一起分享和讨论。
 
 - [spark研究](docs/spark-research)
+    - [spark-launcher](docs/spark-research/spark-launcher)
     - [spark-core](docs/spark-research/spark-core)
     - [spark-kerberos](docs/spark-research/spark-kerberos)
     - [spark-sql](docs/spark-research/spark-sql)
