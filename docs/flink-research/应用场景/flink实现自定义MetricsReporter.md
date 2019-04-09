@@ -126,3 +126,85 @@ public interface Scheduled {
 }
 ```
 实现Scheduler接口的repoter，表示其需要被定期调度执行，定期执行的就是report(..)方法，没有实现Scheduler接口的repoter(..)是不会被定期执行的。
+
+### 举个例子
+当我们自定义指标监控时，首先我们需要准备是：
+- MetricRegistryConfiguation：通过加载配置文件来初始化
+- MetricRegistry：通过MetricRegistryConfiguation实例来创建MetricRegistry实例
+- AbstractMetricGroup的实现类：将MetricRegistry实例注册到AbstractMetricGroup的实现类
+
+现在我们就可以使用AbstractMetricGroup的实现类的实例来添加Metric了。Metric的添加逻辑的入口在AbstractMetricGroup的addMetric方法中，具体如下：
+```java
+AbstractMetricGroup line 356
+
+	protected void addMetric(String name, Metric metric) {
+		if (metric == null) {
+			return;
+		}
+		// add the metric only if the group is still open
+		synchronized (this) {
+			if (!closed) {
+				Metric prior = metrics.put(name, metric);
+				// check for collisions with other metric names
+				if (prior == null) {
+					// no other metric with this name yet
+					if (groups.containsKey(name)) {
+					   //...
+					}
+					// 调用MetricRegistry实例来处理新添加的metric，即将新加的metric注册到当前的Group
+					registry.register(metric, name, this);
+				}
+				else {
+					// we had a collision. put back the original value
+					metrics.put(name, prior);
+				}
+			}
+		}
+	}
+```
+接下来我们看看MetricRegistry.registry(..)的实现逻辑
+```java
+MetricRegistryImpl line 318
+
+	public void register(Metric metric, String metricName, AbstractMetricGroup group) {
+		synchronized (lock) {
+			if (isShutdown()) {
+				LOG.warn("Cannot register metric, because the MetricRegistry has already been shut down.");
+			} else {
+				if (reporters != null) {
+					// 通知所有的reporters
+					for (int i = 0; i < reporters.size(); i++) {
+						MetricReporter reporter = reporters.get(i);
+						try {
+							if (reporter != null) {
+								FrontMetricGroup front = new FrontMetricGroup<AbstractMetricGroup<?>>(i, group);
+								// 然后调用reporter的接口，通知reporter
+								reporter.notifyOfAddedMetric(metric, metricName, front);
+							}
+						} catch (Exception e) {
+							LOG.warn("Error while registering metric.", e);
+						}
+					}
+				}
+				try {
+					if (queryService != null) {
+						MetricQueryService.notifyOfAddedMetric(queryService, metric, metricName, group);
+					}
+				} catch (Exception e) {
+					LOG.warn("Error while registering metric.", e);
+				}
+				try {
+					if (metric instanceof View) {
+						if (viewUpdater == null) {
+							viewUpdater = new ViewUpdater(executor);
+						}
+						viewUpdater.notifyOfAddedView((View) metric);
+					}
+				} catch (Exception e) {
+					LOG.warn("Error while registering metric.", e);
+				}
+			}
+		}
+	}
+```
+
