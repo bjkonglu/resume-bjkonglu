@@ -8,7 +8,7 @@
 #### Metric简介
 Flink对于指标监控有自己的一套实现，指标的统计有四种，这些指标都实现了Metric这个接口，而Metric这个接口只是一个标识，本身并没有定义如何实现接口，具体的接口关系如下：
 
-![Metirc](../../pics/flink/Metric/Metric.png)
+![Metric](../../pics/flink/Metric/Metric.png)
 
 从图中可以看出，Metric这个接口有四个直接类，分别是：
 - Gauge: 最简单的度量指标，只是简单的返回一个值，比如返回一个队列中当前元素的个数
