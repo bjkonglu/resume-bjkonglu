@@ -97,11 +97,11 @@ public MetricRegistryImpl(MetricRegistryConfiguration config) {
 
 		 MetricConfig metricConfig = new MetricConfig();
 		 reporterConfig.addAllToProperties(metricConfig);
-     // 3.通过open(..)方法初始化reporter
+     		 // 3.通过open(..)方法初始化reporter
 		 reporterInstance.open(metricConfig);
 		
 		 if (reporterInstance instanceof Scheduled) {
-        // 4.开始调度执行reporter
+        			// 4.开始调度执行reporter
 				executor.scheduleWithFixedDelay(
 						new MetricRegistryImpl.ReporterTask((Scheduled) reporterInstance), period, period, timeunit);
 			} else {
