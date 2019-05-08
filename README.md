@@ -17,6 +17,7 @@
       - [ExecuteGraph的生成流程](docs/flink-research/flink基本组件和逻辑计划生成/ExecuteGraph的生成流程.md)
       - [JobManger](docs/flink-research/flink基本组件和逻辑计划生成/JobManager.md)
       - [TaskManager](docs/flink-research/flink基本组件和逻辑计划生成/TaskManager.md)
+    - [高级特性](docs/flink-research/)
     - [应用场景](docs/flink-research/应用场景)
       - [flink实现自定义MetricsReporter](docs/flink-research/应用场景/flink实现自定义MetricsReporter.md)
 
