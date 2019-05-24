@@ -21,7 +21,7 @@
       - [任务调度整体概述](docs/flink-research/任务调度与执行/任务调度整体概述.md)
       - [计算资源的调度](docs/flink-research/任务调度与执行/计算资源的调度.md)
     - [高级特性](docs/flink-research/高级特性/)
-      - [状态管理与容错机制](ocs/flink-research/高级特性/状态管理与容错机制.md)
+      - [状态管理与容错机制](docs/flink-research/高级特性/状态管理与容错机制.md)
     - [应用场景](docs/flink-research/应用场景)
       - [flink实现自定义MetricsReporter](docs/flink-research/应用场景/flink实现自定义MetricsReporter.md)
 
