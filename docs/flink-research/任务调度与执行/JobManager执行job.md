@@ -157,3 +157,151 @@ override def handleMessage: Receive = {
 信息
   - SubmitJob提交jobGraph
   
+跟任务调度相关的消息类型就是SubmitJob，从客户端接收到JobGraph，并在JobManager上执行ExecuteGraph的构建过程，而构建ExecuteGraph过程具体实现如下所示：
+
+```scala
+JobManager line 1216
+
+ private def submitJob(jobGraph: JobGraph, jobInfo: JobInfo, isRecovery: Boolean = false): Unit = {
+  ...
+  // 根据JobGraph构建ExecuteGraph
+  executionGraph = ExecutionGraphBuilder.buildGraph(
+          executionGraph,
+          jobGraph,
+          flinkConfiguration,
+          futureExecutor,
+          ioExecutor,
+          scheduler,
+          userCodeLoader,
+          checkpointRecoveryFactory,
+          Time.of(timeout.length, timeout.unit),
+          restartStrategy,
+          jobMetrics,
+          numSlots,
+          blobServer,
+          Time.milliseconds(allocationTimeout),
+          log.logger)
+  ...
+  
+  if (leaderSessionID.isDefined &&
+            leaderElectionService.hasLeadership(leaderSessionID.get)) {
+            // There is a small chance that multiple job managers schedule the same job after if
+            // they try to recover at the same time. This will eventually be noticed, but can not be
+            // ruled out from the beginning.
+
+            // NOTE: Scheduling the job for execution is a separate action from the job submission.
+            // The success of submitting the job must be independent from the success of scheduling
+            // the job.
+            log.info(s"Scheduling job $jobId ($jobName).")
+
+            // 调度任务
+            executionGraph.scheduleForExecution()
+          } else {
+            // Remove the job graph. Otherwise it will be lingering around and possibly removed from
+            // ZooKeeper by this JM.
+            self ! decorateMessage(RemoveJob(jobId, removeJobFromStateBackend = false))
+
+            log.warn(s"Submitted job $jobId, but not leader. The other leader needs to recover " +
+              "this. I am not scheduling the job for execution.")
+          }
+     ...     
+          
+```
+上述代码逻辑总结起来是：首先做一些准备工作，然后根据JobGraph构建ExecuteGraph，判断是否是恢复的job，然后将job保持下来，并且通知客户端端本地以及提交成功，最后判断当前JobManager是否是leader，如果是则执行executionGraph.scheduleForExecution()方法，这个方法经过一系列调用，把每个ExecutionVertex传递给Execute类的deploy()方法
+
+```scala
+ExecuteGraph line 932
+
+	private CompletableFuture<Void> scheduleEager(SlotProvider slotProvider, final Time timeout) {
+		checkState(state == JobStatus.RUNNING, "job is not running currently");
+		final boolean queued = allowQueuedScheduling;
+
+		final ArrayList<CompletableFuture<Execution>> allAllocationFutures = new ArrayList<>(getNumberOfExecutionJobVertices());
+
+		// allocate the slots (obtain all their futures
+		for (ExecutionJobVertex ejv : getVerticesTopologically()) {
+			// these calls are not blocking, they only return futures
+			Collection<CompletableFuture<Execution>> allocationFutures = ejv.allocateResourcesForAll(
+				slotProvider,
+				queued,
+				LocationPreferenceConstraint.ALL,
+				allocationTimeout);
+
+			allAllocationFutures.addAll(allocationFutures);
+		}
+
+		// this future is complete once all slot futures are complete.
+		// the future fails once one slot future fails.
+		final ConjunctFuture<Collection<Execution>> allAllocationsFuture = FutureUtils.combineAll(allAllocationFutures);
+
+		final CompletableFuture<Void> currentSchedulingFuture = allAllocationsFuture
+			.thenAccept(
+				(Collection<Execution> executionsToDeploy) -> {
+					for (Execution execution : executionsToDeploy) {
+						try {
+              // 开始执行task
+							execution.deploy();
+						} catch (Throwable t) {
+							throw new CompletionException(
+								new FlinkException(
+									String.format("Could not deploy execution %s.", execution),
+									t));
+						}
+					}
+				})
+			...
+
+		return currentSchedulingFuture;
+	}
+```
+
+```scala
+Execution line 536
+
+public void deploy() throws JobException {
+		...
+
+		try {
+			...	
+			// task描述符
+			final TaskDeploymentDescriptor deployment = vertex.createDeploymentDescriptor(
+				attemptId,
+				slot,
+				taskRestore,
+				attemptNumber);
+
+			// null taskRestore to let it be GC'ed
+			taskRestore = null;
+
+			final TaskManagerGateway taskManagerGateway = slot.getTaskManagerGateway();
+
+			// 提交task任务到TM上
+			final CompletableFuture<Acknowledge> submitResultFuture = taskManagerGateway.submitTask(deployment, rpcTimeout);
+
+			submitResultFuture.whenCompleteAsync(
+				(ack, failure) -> {
+					// only respond to the failure case
+					if (failure != null) {
+						if (failure instanceof TimeoutException) {
+							String taskname = vertex.getTaskNameWithSubtaskIndex() + " (" + attemptId + ')';
+
+							markFailed(new Exception(
+								"Cannot deploy task " + taskname + " - TaskManager (" + getAssignedResourceLocation()
+									+ ") not responding after a rpcTimeout of " + rpcTimeout, failure));
+						} else {
+							markFailed(failure);
+						}
+					}
+				},
+				executor);
+		}
+		catch (Throwable t) {
+			markFailed(t);
+			ExceptionUtils.rethrow(t);
+		}
+	}
+```
+首先我们创建一个TaskDeploymentDescriptor，然后通过TaskManager的网关提交任务（taskManagerGateway.submitTask(..)），下面任务就被发送到TaskManager里面了。
+
+注意：TaskDeploymentDescriptor的组件包含JobId，JobInformation(序列化之后的)，TaskInformation(序列化之后的)，槽位信息等等
+
