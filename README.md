@@ -21,6 +21,7 @@
       - [任务调度整体概述](docs/flink-research/任务调度与执行/任务调度整体概述.md)
       - [计算资源的调度](docs/flink-research/任务调度与执行/计算资源的调度.md)
       - [JobManager执行job](docs/flink-research/任务调度与执行/JobManager执行job.md)
+      - [TaskManager执行task](docs/flink-research/任务调度与执行/TaskManager执行task.md)
     - [高级特性](docs/flink-research/高级特性/)
       - [状态管理与容错机制](docs/flink-research/高级特性/状态管理与容错机制.md)
     - [应用场景](docs/flink-research/应用场景)
