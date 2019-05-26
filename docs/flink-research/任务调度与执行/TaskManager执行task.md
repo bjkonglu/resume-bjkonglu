@@ -174,7 +174,98 @@ TaskManager line 1120
   - 从序列化的task信息里反序列化出task信息类(TaskInformation)
   - 获取当前task的输入信息(inputSplitProvider)
   - 最后收集上述信息，并创建一个新的Task对象，代表将要执行的任务
-  - 开始执行Task
+  - 开始执行Task，并向JobManager上报已经启动Task了
 
-  
+下面在具体介绍一下Task的构建和Task的运行
+
+#### Task的构建
+在构建Task时，第一步是把构造函数里面的变量赋值给当前task的成员变量，接下来是初始化producedPartition和inputGates。这两个变量描述了当前task的输出数据和输入数据。
+```scala
+Task line 277
+
+public Task(
+		JobInformation jobInformation,
+		TaskInformation taskInformation,
+		ExecutionAttemptID executionAttemptID,
+		AllocationID slotAllocationId,
+		int subtaskIndex,
+		int attemptNumber,
+		Collection<ResultPartitionDeploymentDescriptor> resultPartitionDeploymentDescriptors,
+		Collection<InputGateDeploymentDescriptor> inputGateDeploymentDescriptors,
+		int targetSlotNumber,
+		MemoryManager memManager,
+		IOManager ioManager,
+		NetworkEnvironment networkEnvironment,
+		BroadcastVariableManager bcVarManager,
+		TaskStateManager taskStateManager,
+		TaskManagerActions taskManagerActions,
+		InputSplitProvider inputSplitProvider,
+		CheckpointResponder checkpointResponder,
+		BlobCacheService blobService,
+		LibraryCacheManager libraryCache,
+		FileCache fileCache,
+		TaskManagerRuntimeInfo taskManagerConfig,
+		@Nonnull TaskMetricGroup metricGroup,
+		ResultPartitionConsumableNotifier resultPartitionConsumableNotifier,
+		PartitionProducerStateChecker partitionProducerStateChecker,
+		Executor executor) {
+
+		...
+		// Produced intermediate result partitions
+		this.producedPartitions = new ResultPartition[resultPartitionDeploymentDescriptors.size()];
+
+		int counter = 0;
+
+		for (ResultPartitionDeploymentDescriptor desc: resultPartitionDeploymentDescriptors) {
+			ResultPartitionID partitionId = new ResultPartitionID(desc.getPartitionId(), executionId);
+
+			this.producedPartitions[counter] = new ResultPartition(
+				taskNameWithSubtaskAndId,
+				this,
+				jobId,
+				partitionId,
+				desc.getPartitionType(),
+				desc.getNumberOfSubpartitions(),
+				desc.getMaxParallelism(),
+				networkEnvironment.getResultPartitionManager(),
+				resultPartitionConsumableNotifier,
+				ioManager,
+				desc.sendScheduleOrUpdateConsumersMessage());
+
+			++counter;
+		}
+
+		// Consumed intermediate result partitions
+		this.inputGates = new SingleInputGate[inputGateDeploymentDescriptors.size()];
+		this.inputGatesById = new HashMap<>();
+
+		counter = 0;
+
+		for (InputGateDeploymentDescriptor inputGateDeploymentDescriptor: inputGateDeploymentDescriptors) {
+			SingleInputGate gate = SingleInputGate.create(
+				taskNameWithSubtaskAndId,
+				jobId,
+				executionId,
+				inputGateDeploymentDescriptor,
+				networkEnvironment,
+				this,
+				metricGroup.getIOMetricGroup());
+
+			inputGates[counter] = gate;
+			inputGatesById.put(gate.getConsumedResultId(), gate);
+
+			++counter;
+		}
+
+		invokableHasBeenCanceled = new AtomicBoolean(false);
+
+		// finally, create the executing thread, but do not start it
+    // 最后，创建一个包含自己的线程
+		executingThread = new Thread(TASK_THREADS_GROUP, this, taskNameWithSubtask);
+	}
+```
+最后，创建一个Thread对象，并把自己放入到该线程对象里，这样在执行时，Task就有了自身的线程的引用。
+#### Task的运行
+
+Task类实现了Runnable接口，因此在其run()方法里
 
