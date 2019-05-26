@@ -623,3 +623,5 @@ StreamTask.invoke()代码主体逻辑分为以下几块：
   - 初始化算子的状态
   - 执行rich算子的open()方法
   - 最后执行run方法，调用用户编写的代码逻辑，例如当前task是SourceStreamTask类型(具体如数据源是env.socketTextStream())，经过一些的调用最后会调用SocketTextStreamFunction类的run()方法，建立socket连接并读入文本。
+  
+至此，从用户编写的流式用户到Flink真正执行用户代码逻辑的流程就完成了。  
