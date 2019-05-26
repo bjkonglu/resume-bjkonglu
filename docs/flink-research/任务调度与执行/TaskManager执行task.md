@@ -1,1 +1,8 @@
 ## TaskManager执行task
+
+### TaskManager的基本组件
+TaskManager是Flink中资源管理的基本组件，是所有执行任务的基本容器，提供了内存管理、IO管理、网络管理等一系列功能，下面对各个模块具体介绍：
+  - 内存管理（MemoryManager）Flink并没有把所有内存的管理都委托给JVM，因为JVM普遍存在存储对象密度过低、大内存时GC对系统性能影响较大的问题。所以Flink自己抽象了一套内存管理机制，将所有对象系列化后存放在自己的MemorySegment上进行管理。
+  - IO管理（IOMemoryManager）Flink通过IOManager管理磁盘IO的过程，提供了同步和异步两个写模式，又进一步区分了block、buffer和bulk三种读写方式。IOManager提供了两种方式枚举磁盘文件，一种是直接遍历文件夹下所有文件，另一种是计数器方式，对每个文件名以递增顺序访问。
+  - 网络网络（NetworkEnvironment）NetworkEnvironment是TaskManager的网络IO组件，包括了最终中间结果和数据交换数据结构。它的构造函数会统一将配置的内存先分配出来，抽象成NetworkBufferPool统一管理内存的申请和释放。举个例子，在输入和输出数据时，不管是保留在本地内存，等待chain在一起的下一个算子进行处理，还是通过网络把本算子的计算结果发送出去，都被抽象成NetworkBufferPool。
+  
