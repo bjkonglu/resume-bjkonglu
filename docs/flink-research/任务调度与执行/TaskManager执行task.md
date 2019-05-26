@@ -503,7 +503,7 @@ public void run() {
 	invokable = loadAndInstantiateInvokable(userCodeClassLoader, nameOfInvokableClass, env);
  ```
 下面具体列举了Flink可被执行的Task类型：
-![Task]()
+![Task](../../pics/flink/task.png)
 
 接下来就是invoke方法，我们主要介绍流式计算，所以我们以StreamTask的invoke方法为例进行说明
 
