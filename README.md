@@ -24,6 +24,7 @@
       - [TaskManager执行task](docs/flink-research/任务调度与执行/TaskManager执行task.md)
     - [高级特性](docs/flink-research/高级特性/)
       - [状态管理与容错机制](docs/flink-research/高级特性/状态管理与容错机制.md)
+      - [flink的背压原理](docs/flink-research/高级特性/Flink的背压原理.md)
     - [应用场景](docs/flink-research/应用场景)
       - [flink实现自定义MetricsReporter](docs/flink-research/应用场景/flink实现自定义MetricsReporter.md)
 
