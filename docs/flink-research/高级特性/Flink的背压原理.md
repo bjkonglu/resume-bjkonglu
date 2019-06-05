@@ -13,7 +13,7 @@ Flink在运行时主要由operator和streams两大组件构成。每个operator�
 #### 网络传输中的内存管理
 下图展示了Flink在网络传输场景下的内存管理。网络上传输的数据会写到Task的InputGate(IG)中，经过Task的逻辑处理后，再由Task写到ResultPartition（RS）中。每个Task都包含了输入和输出，输入和输出的数据存在Buffer中（都是字节数据）。Buffer是MemorySegment的包装类。
 
-![网络传输中的内存管理]()
+![网络传输中的内存管理](../../pics/flink/network_memory.png)
 
   1. TaskManager(TM)在启动时，会先初始化NetworkEnvironment对象，TM中所有与网络相关的东西都会由该类来管理（如Netty连接），其中就包括NetworkBufferPool。根据配置，Flink会在NetworkBufferPool中生成一定数量（默认2048）的内存块MemorySegment，内存块的总数量就代表了网络传输中所有可能的内存。NetworkEnvironment和NetworkBufferPool是Task之间共享的，每个TM只会实例化一个。
   2. Task线程启动时，会向NetworkEnvironment注册，NetworkEnvironment会为Task的InputGate(IG)和ResultPartition(RP)分别创建一个LocalBufferPool（缓冲池）并设置可申请的MemorySegment（内存块）数量。IG 对应的缓冲池初始的内存块数量与 IG 中 InputChannel 数量一致，RP 对应的缓冲池初始的内存块数量与 RP 中的 ResultSubpartition 数量一致。不过，每当创建或销毁缓冲池时，NetworkBufferPool 会计算剩余空闲的内存块数量，并平均分配给已创建的缓冲池。注意，这个过程只是指定了缓冲池所能使用的内存块数量，并没有真正分配内存块，只有当需要时才分配。为什么要动态地为缓冲池扩容呢？因为内存越多，意味着系统可以更轻松地应对瞬时压力（如GC），不会频繁地进入反压状态，所以我们要利用起那部分闲置的内存块。
@@ -24,7 +24,7 @@ Flink在运行时主要由operator和streams两大组件构成。每个operator�
 
 下图简单展示了两个Task之间的数据传输以及Flink如何感知到背压
 
-![背压过程]()
+![背压过程](../../pics/flink/back_press_process.png)
 
 说明：
   - 记录“A”进入Flink并且被Task1处理（其实这个过程还包含了Netty接收、反序列化等过程）；
@@ -45,7 +45,7 @@ Flink在运行时主要由operator和streams两大组件构成。每个operator�
 
 在Flink的官方博客中为了展示Flink的背压效果，做了一个小实验。下面这张图显示了：随着时间的改变，生产者（黄色线）和消费者（绿色线）每5秒的平均吞吐与最大吞吐（在单一JVM中每秒达到8百万条记录）的百分比。我们通过衡量task每5秒钟处理的记录数来衡量平均吞吐。该实验运行在单 JVM 中，不过使用了完整的 Flink 功能栈。
 
-![背压实验]()
+![背压实验](../../pics/flink/back_press_experiment.png)
 
 首先，我们运行生产task到它最大生产速度的60%（我们通过Thread.sleep()来模拟降速）。消费者以同样的速度处理数据。然后，我们将消费task的速度降至其最高速度的30%。你就会看到背压问题产生了，正如我们所见，生产者的速度也自然降至其最高速度的30%。接着，停止消费task的人为降速，之后生产者和消费者task都达到了其最大的吞吐。接下来，我们再次将消费者的速度降至30%，pipeline给出了立即响应：生产者的速度也被自动降至30%。最后，我们再次停止限速，两个task也再次恢复100%的速度。总而言之，我们可以看到：生产者和消费者在 pipeline 中的处理都在跟随彼此的吞吐而进行适当的调整，这就是我们希望看到的反压的效果。
 
@@ -61,7 +61,7 @@ o.a.f.[...].LocalBufferPool.requestBufferBlocking(LocalBufferPool.java:133) <---
 ```
 那么事情就简单了。通过不断地采样每个 task 的 stack trace 就可以实现反压监控。
 
-![背压监控]()
+![背压监控](../../pics/flink/back_press_monitor.png)
 
 Flink 的实现中，只有当 Web 页面切换到某个 Job 的 Backpressure 页面，才会对这个 Job 触发反压检测，因为反压检测还是挺昂贵的。JobManager 会通过 Akka 给每个 TaskManager 发送TriggerStackTraceSample消息。默认情况下，TaskManager 会触发100次 stack trace 采样，每次间隔 50ms（也就是说一次反压检测至少要等待5秒钟）。并将这 100 次采样的结果返回给 JobManager，由 JobManager 来计算反压比率（反压出现的次数/采样的次数），最终展现在 UI 上。UI 刷新的默认周期是一分钟，目的是不对 TaskManager 造成太大的负担。
 
