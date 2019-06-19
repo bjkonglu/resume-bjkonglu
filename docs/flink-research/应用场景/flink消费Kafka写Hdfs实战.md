@@ -17,7 +17,7 @@
 ```
 
 #### Flink BucketingSink
-在*flink-connector-filesystem_2.11*里面提供一个数据汇（BucketingSink），我们可以利用这个数据汇来将数据写入Hdfs，它是通过数据到达数据汇的时间作为分桶的条件，例如数据A到达数据汇的时间是12:45，则被分配到2019-6-19--12这个桶里面，而当数据B到达数据汇的时间是13:01，则被分配到2019-6-19--13这哥桶里面。
+在*flink-connector-filesystem_2.11*里面提供一个数据汇（BucketingSink），我们可以利用这个数据汇来将数据写入Hdfs，它是通过数据到达数据汇的时间作为分桶的条件，例如数据A到达数据汇的时间是12:45，则被分配到2019-6-19--12这个桶里面，而当数据B到达数据汇的时间是13:01，则被分配到2019-6-19--13这个桶里面。
 ```java
   DataStream<String> input = ...;
   input.addSink(new BucketingSink("path/to/store"));
