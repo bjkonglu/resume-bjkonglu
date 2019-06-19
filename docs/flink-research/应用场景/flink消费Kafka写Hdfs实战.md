@@ -10,9 +10,9 @@
 
 ```java
 <dependency>
-	<groupId>org.apache.flink</groupId>
-	<artifactId>flink-connector-filesystem_2.11</artifactId>
-	<version>${flink.version}</version>
+    <groupId>org.apache.flink</groupId>
+    <artifactId>flink-connector-filesystem_2.11</artifactId>
+    <version>${flink.version}</version>
 </dependency>
 ```
 
