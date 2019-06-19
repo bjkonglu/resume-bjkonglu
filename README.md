@@ -28,6 +28,7 @@
       - [flink里面的异步调用(Async I/O)](docs/flink-research/高级特性/Flink里面的异步调用AsyncDataStream.md)
     - [应用场景](docs/flink-research/应用场景)
       - [flink实现自定义MetricsReporter](docs/flink-research/应用场景/flink实现自定义MetricsReporter.md)
+      - [flink消费Kafka写Hdfs实战](docs/flink-research/应用场景/flink消费Kafka写Hdfs实战.md)
 
 平时遇到的问题和思考记录在[issue](https://github.com/bjkonglu/resume-bjkonglu/issues),与君共享。
 
